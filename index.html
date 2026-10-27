@@ -34,15 +34,23 @@
   .card .dev{color:var(--muted);margin:0 0 8px}
   .card .status{margin:8px 0}
   .card .go{display:inline-block;margin-top:8px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:999px;font-weight:700}
-  .request{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:24px}
-  .request h2{margin:0 0 8px;font-size:1.3rem}
-  .request p{margin:6px 0;color:var(--muted)}
-  .request label{display:block;margin:14px 0 6px;font-weight:700}
-  .request input{width:100%;padding:12px 16px;font-size:1rem;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);outline:none}
-  .request input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(11,122,75,.18)}
-  .request button{display:inline-block;margin-top:14px;background:var(--accent);color:#fff;border:0;padding:10px 20px;border-radius:999px;font-weight:700;font-size:1rem;cursor:pointer}
-  .request .ig-link{display:inline-block;margin:14px 0 0 10px;color:#0b5cab;font-weight:700}
-  #copy-status{color:var(--accent);font-weight:700;min-height:1.5em}
+  .comments{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:24px}
+  .comments h2{margin:0 0 8px;font-size:1.3rem}
+  .comments p{margin:6px 0;color:var(--muted)}
+  .comments label{display:block;margin:14px 0 6px;font-weight:700}
+  .comments input,.comments textarea{width:100%;padding:12px 16px;font-size:1rem;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);outline:none;font-family:inherit}
+  .comments input:focus,.comments textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(11,122,75,.18)}
+  .comments button{display:inline-block;margin-top:14px;background:var(--accent);color:#fff;border:0;padding:10px 20px;border-radius:999px;font-weight:700;font-size:1rem;cursor:pointer}
+  .comments button:disabled{opacity:.6;cursor:default}
+  #comment-status{color:var(--accent);font-weight:700;min-height:1.5em}
+  #comment-status.error{color:var(--red-ink)}
+  .comment-list{list-style:none;margin:18px 0 0;padding:0}
+  .comment-list li{border-top:1px solid var(--line);padding:14px 0}
+  .comment-list .who{font-weight:700}
+  .comment-list .when{color:var(--muted);font-size:.9rem;margin-left:8px}
+  .comment-list .text{margin:6px 0 0;white-space:pre-wrap;word-break:break-word}
+  .comment-list .del{background:none;border:0;color:#0b5cab;font-weight:700;font-size:.9rem;cursor:pointer;padding:0;margin-top:6px}
+  .moderate{display:inline-block;margin-top:14px;color:#0b5cab;font-weight:700}
   footer{padding:8px 14px 30px;color:var(--muted)}
   footer p{margin:6px 0;font-size:.92rem}
   footer a{color:#0b5cab}
@@ -177,15 +185,22 @@
     </a>
   </div>
 
-  <div class="request">
+  <section class="comments" id="comments">
     <h2>¿Falta tu juego?</h2>
-    <p>Escríbeme el nombre del juego y lo reviso para agregarlo. Para entrar, el juego tiene que tener jugadores activos, sistema de códigos y una fuente donde verificarlos. También puedes reportar por aquí un código que ya no funciona.</p>
-    <label for="request-game">Nombre del juego en Roblox</label>
-    <input type="text" id="request-game" placeholder="Ejemplo: Blox Fruits" autocomplete="off">
-    <button type="button" id="copy-request">Copiar pedido</button>
-    <a class="ig-link" href="https://www.instagram.com/erickpfertas/" target="_blank" rel="noopener">Enviarlo por Instagram</a>
-    <p id="copy-status" aria-live="polite"></p>
-  </div>
+    <p>Comenta tu juego favorito y lo reviso para agregarlo. Para entrar, el juego tiene que tener jugadores activos, sistema de códigos y una fuente donde verificarlos. También puedes reportar por aquí un código que ya no funciona.</p>
+    <p>Tu nombre es opcional. No publiques datos personales.</p>
+    <form id="comment-form">
+      <label for="comment-name">Nombre (opcional)</label>
+      <input type="text" id="comment-name" maxlength="50" placeholder="Tu nombre o apodo" autocomplete="off">
+      <label for="comment-body">Comentario</label>
+      <textarea id="comment-body" maxlength="500" rows="3" placeholder="Ejemplo: Blox Fruits" required></textarea>
+      <button type="submit" id="comment-submit">Publicar comentario</button>
+      <p id="comment-status" aria-live="polite"></p>
+    </form>
+    <p id="comments-empty">Sé el primero en comentar…</p>
+    <ul class="comment-list" id="comment-list"></ul>
+    <a class="moderate" href="#" id="moderate-link">Moderar</a>
+  </section>
 </main>
 
 <footer>
@@ -216,23 +231,126 @@
 </script>
 <script>
   (function () {
-    var input = document.getElementById('request-game');
-    var btn = document.getElementById('copy-request');
-    var status = document.getElementById('copy-status');
-    btn.addEventListener('click', function () {
-      var game = input.value.trim();
-      if (!game) { status.textContent = 'Escribe primero el nombre del juego.'; input.focus(); return; }
-      var msg = 'Hola, ¿puedes agregar los códigos de ' + game + ' a Códigos de Roblox? ¡Gracias!';
-      function done() { status.textContent = '¡Pedido copiado! Ahora pégalo en el DM de Instagram.'; }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(msg).then(done, function () { status.textContent = 'No se pudo copiar. Tu mensaje: ' + msg; });
-      } else {
-        var ta = document.createElement('textarea');
-        ta.value = msg; document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); done(); } catch (e) { status.textContent = 'No se pudo copiar. Tu mensaje: ' + msg; }
-        document.body.removeChild(ta);
+    var form = document.getElementById('comment-form');
+    var nameInput = document.getElementById('comment-name');
+    var bodyInput = document.getElementById('comment-body');
+    var submit = document.getElementById('comment-submit');
+    var status = document.getElementById('comment-status');
+    var list = document.getElementById('comment-list');
+    var empty = document.getElementById('comments-empty');
+    var moderateLink = document.getElementById('moderate-link');
+    var ADMIN_KEY = 'comments_admin_key';
+
+    function adminKey() {
+      try { return sessionStorage.getItem(ADMIN_KEY); } catch (e) { return null; }
+    }
+    function setStatus(text, isError) {
+      status.textContent = text;
+      status.className = isError ? 'error' : '';
+    }
+    function formatDate(ms) {
+      try {
+        return new Date(ms).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' });
+      } catch (e) { return ''; }
+    }
+    function render(comments) {
+      list.textContent = '';
+      empty.style.display = comments.length === 0 ? 'block' : 'none';
+      var key = adminKey();
+      comments.forEach(function (c) {
+        var li = document.createElement('li');
+        var who = document.createElement('span');
+        who.className = 'who';
+        who.textContent = c.name || 'Anónimo';
+        var when = document.createElement('span');
+        when.className = 'when';
+        when.textContent = formatDate(c.created_at);
+        var text = document.createElement('p');
+        text.className = 'text';
+        text.textContent = c.body;
+        li.appendChild(who);
+        li.appendChild(when);
+        li.appendChild(text);
+        if (key) {
+          var del = document.createElement('button');
+          del.type = 'button';
+          del.className = 'del';
+          del.textContent = 'Borrar';
+          del.addEventListener('click', function () { deleteComment(c.id); });
+          li.appendChild(del);
+        }
+        list.appendChild(li);
+      });
+    }
+    async function loadComments() {
+      try {
+        var res = await fetch('/api/comments');
+        if (!res.ok) throw new Error('bad status');
+        var data = await res.json();
+        render(Array.isArray(data) ? data : []);
+      } catch (e) {
+        empty.style.display = 'none';
+        list.textContent = '';
+        var li = document.createElement('li');
+        li.textContent = 'No se pudieron cargar los comentarios en este momento. Inténtalo de nuevo más tarde.';
+        list.appendChild(li);
+      }
+    }
+    async function deleteComment(id) {
+      var key = adminKey();
+      if (!key) return;
+      try {
+        var res = await fetch('/api/comments/' + id, {
+          method: 'DELETE',
+          headers: { 'X-Admin-Key': key },
+        });
+        if (res.status === 401) {
+          try { sessionStorage.removeItem(ADMIN_KEY); } catch (e) {}
+          setStatus('Clave incorrecta.', true);
+          loadComments();
+          return;
+        }
+        if (!res.ok) throw new Error('delete failed');
+        setStatus('Comentario borrado.', false);
+        loadComments();
+      } catch (e) {
+        setStatus('No se pudo borrar el comentario. Inténtalo de nuevo.', true);
+      }
+    }
+    form.addEventListener('submit', async function (ev) {
+      ev.preventDefault();
+      var body = bodyInput.value.trim();
+      if (!body) { setStatus('Escribe un comentario primero.', true); bodyInput.focus(); return; }
+      submit.disabled = true;
+      setStatus('Publicando…', false);
+      try {
+        var res = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: nameInput.value.trim(), body: body }),
+        });
+        var data = await res.json().catch(function () { return {}; });
+        if (!res.ok) {
+          setStatus(data.error || 'No se pudo publicar tu comentario. Inténtalo de nuevo en un momento.', true);
+        } else {
+          bodyInput.value = '';
+          setStatus('¡Comentario publicado! Gracias.', false);
+          loadComments();
+        }
+      } catch (e) {
+        setStatus('No se pudo publicar tu comentario. Inténtalo de nuevo en un momento.', true);
+      }
+      submit.disabled = false;
+    });
+    moderateLink.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      var key = window.prompt('Clave de moderación:');
+      if (key) {
+        try { sessionStorage.setItem(ADMIN_KEY, key); } catch (e) {}
+        loadComments();
       }
     });
+    loadComments();
   })();
 </script>
 </body>

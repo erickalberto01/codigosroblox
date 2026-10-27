@@ -1,5 +1,12 @@
 name = "codigosroblox"
 compatibility_date = "2026-10-26"
+main = "src/index.js"
 
 [assets]
+binding = "ASSETS"
 directory = "./"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "codigosroblox-comments"
+database_id = "7072b926-8a89-418b-b3e5-2c260a43a18e"
