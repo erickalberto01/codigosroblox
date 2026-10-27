@@ -9,11 +9,12 @@
   :root{--bg:#f4f6f8;--card:#ffffff;--ink:#1c2430;--muted:#5b6775;--line:#dfe5ec;--accent:#0b7a4b;--warn-bg:#fff4d6;--warn-line:#e8b93c;--warn-ink:#6b4e00;--red-bg:#fdecec;--red-line:#e5a0a0;--red-ink:#7a1f1f}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55}
-  header{background:#14202e;color:#fff;padding:28px 18px 22px}
+  header{background:linear-gradient(135deg,#0f1c2b 0%,#14202e 45%,#123f2d 100%);color:#fff;padding:44px 18px 34px;text-align:center}
   header .wrap,main,footer .wrap{max-width:760px;margin:0 auto}
-  h1{margin:0 0 8px;font-size:1.7rem;line-height:1.25}
-  header p{margin:6px 0;color:#c9d4e0}
-  .rev{display:inline-block;margin-top:12px;background:#22374d;border:1px solid #3a526e;color:#dbe7f3;padding:6px 12px;border-radius:999px;font-size:.9rem}
+  h1{margin:0 0 4px;font-size:clamp(2rem,7vw,2.6rem);line-height:1.15;font-weight:900;letter-spacing:-.5px;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+  header .bar{display:block;width:72px;height:5px;margin:14px auto 12px;background:linear-gradient(90deg,#2e7d4f,#7ed491);border-radius:999px}
+  header p{margin:6px auto;color:#c9d4e0;font-size:1.05rem;max-width:620px}
+  .rev{display:inline-block;margin-top:14px;background:#22374d;border:1px solid #3a526e;color:#dbe7f3;padding:6px 12px;border-radius:999px;font-size:.9rem}
   main{padding:18px 14px 8px}
   .notice{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;padding:16px 18px;margin-bottom:20px}
   .notice h2{margin:0 0 6px;font-size:1.15rem;color:var(--warn-ink)}
@@ -41,7 +42,8 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>Códigos de Roblox</h1>
+    <h1>🎮 Códigos de Roblox</h1>
+    <span class="bar" aria-hidden="true"></span>
     <p>Los códigos que ya existen, bien presentados, para jugadores nuevos y viejos. Sin listas copiadas a ciegas: aquí verás qué reporta la comunidad, qué está en disputa y qué ya venció.</p>
     <span class="rev">Revisado: 26 de octubre de 2026</span>
   </div>
